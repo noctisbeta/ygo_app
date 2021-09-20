@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 // import 'entry_adding_page.dart';
+import 'package:uuid/uuid.dart';
 
 class CalcPage extends StatefulWidget {
   const CalcPage({Key? key}) : super(key: key);
@@ -10,8 +11,10 @@ class CalcPage extends StatefulWidget {
 
 class _CalcPageState extends State<CalcPage> {
   int numDeck = 0;
+  int _counter = 0;
 
   List<Widget> wantedCards = [];
+  List<UniqueKey> keys = [];
 
   // @override
   // void initState() {
@@ -23,7 +26,7 @@ class _CalcPageState extends State<CalcPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       // resizeToAvoidBottomInset: false,
-      drawer: Container(
+      drawer: SizedBox(
         width: 100,
         child: Drawer(
           child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -45,6 +48,30 @@ class _CalcPageState extends State<CalcPage> {
                     padding: EdgeInsets.all(10),
                     child: Icon(
                       Icons.dark_mode_outlined,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Ink(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      color: Theme.of(context).accentColor, width: 4.0),
+                  shape: BoxShape.circle,
+                ),
+                child: InkWell(
+                  focusColor: Colors.red,
+                  splashColor: Theme.of(context).accentColor,
+                  highlightColor: Theme.of(context).backgroundColor,
+                  borderRadius: BorderRadius.circular(10.0),
+                  onTap: () {},
+                  child: const Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Icon(
+                      Icons.info_outline,
                       color: Colors.black,
                     ),
                   ),
@@ -76,10 +103,10 @@ class _CalcPageState extends State<CalcPage> {
                       child: TextFormField(
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                         labelText: 'Number of cards',
-                        focusColor: Colors.blue,
-                        border: OutlineInputBorder()),
+                        focusColor: Theme.of(context).primaryColor,
+                        border: const OutlineInputBorder()),
                   ))
                 ],
               ),
@@ -98,10 +125,10 @@ class _CalcPageState extends State<CalcPage> {
                       child: TextFormField(
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                         labelText: 'Number of cards',
-                        focusColor: Colors.blue,
-                        border: OutlineInputBorder()),
+                        focusColor: Theme.of(context).primaryColor,
+                        border: const OutlineInputBorder()),
                   ))
                 ],
               ),
@@ -139,10 +166,12 @@ class _CalcPageState extends State<CalcPage> {
                         ),
                       ),
                     ),
-                    key: Key(item.toString()),
+                    key: keys[index],
+                    // key: Key(Uuid().v1()),
                     onDismissed: (direction) {
                       setState(() {
                         wantedCards.removeAt(index);
+                        keys.removeAt(index);
                       });
                       // ScaffoldMessenger.of(context).showSnackBar(
                       //   SnackBar(
@@ -194,6 +223,7 @@ class _CalcPageState extends State<CalcPage> {
                       onTap: () {
                         setState(() {
                           wantedCards.removeLast();
+                          keys.removeLast();
                         });
                       },
                       child: const Padding(
@@ -244,13 +274,13 @@ class _CalcPageState extends State<CalcPage> {
                       shape: BoxShape.circle,
                     ),
                     child: InkWell(
-                      focusColor: Colors.red,
                       splashColor: Theme.of(context).accentColor,
                       highlightColor: Theme.of(context).backgroundColor,
                       borderRadius: BorderRadius.circular(1000.0),
                       onTap: () {
                         setState(() {
                           wantedCards.add(cardEntry2());
+                          keys.add(UniqueKey());
                         });
                       },
                       // () async {
@@ -303,62 +333,62 @@ class _CalcPageState extends State<CalcPage> {
   //   });
   // }
 
-  void enterQueue() {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              // scrollable: true,
-              title: const Text('Enter card details'),
-              content: TextFormField(
-                style: const TextStyle(fontSize: 15),
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(), labelText: "Card name"),
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Confirm'))
-              ],
-            ));
-  }
+  // void enterQueue() {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) => AlertDialog(
+  //             // scrollable: true,
+  //             title: const Text('Enter card details'),
+  //             content: TextFormField(
+  //               style: const TextStyle(fontSize: 15),
+  //               decoration: const InputDecoration(
+  //                   border: OutlineInputBorder(), labelText: "Card name"),
+  //             ),
+  //             actions: [
+  //               TextButton(
+  //                   onPressed: () => Navigator.of(context).pop(),
+  //                   child: const Text('Confirm'))
+  //             ],
+  //           ));
+  // }
 
-  Widget cardEntry() {
-    return Column(
-      children: [
-        Expanded(
-          child: TextFormField(
-            style: const TextStyle(fontSize: 15),
-            decoration: const InputDecoration(
-                border: OutlineInputBorder(), labelText: "Card name"),
-          ),
-        ),
-        Expanded(
-          child: TextFormField(
-            keyboardType: TextInputType.number,
-            style: const TextStyle(fontSize: 15),
-            decoration: const InputDecoration(
-                border: OutlineInputBorder(), labelText: "Copies in deck"),
-          ),
-        ),
-        Expanded(
-          child: TextFormField(
-            keyboardType: TextInputType.number,
-            style: const TextStyle(fontSize: 15),
-            decoration: const InputDecoration(
-                border: OutlineInputBorder(), labelText: "Minimum wanted"),
-          ),
-        ),
-        Expanded(
-          child: TextFormField(
-            keyboardType: TextInputType.number,
-            style: const TextStyle(fontSize: 15),
-            decoration: const InputDecoration(
-                border: OutlineInputBorder(), labelText: "Maximum wanted"),
-          ),
-        )
-      ],
-    );
-  }
+  // Widget cardEntry() {
+  //   return Column(
+  //     children: [
+  //       Expanded(
+  //         child: TextFormField(
+  //           style: const TextStyle(fontSize: 15),
+  //           decoration: const InputDecoration(
+  //               border: OutlineInputBorder(), labelText: "Card name"),
+  //         ),
+  //       ),
+  //       Expanded(
+  //         child: TextFormField(
+  //           keyboardType: TextInputType.number,
+  //           style: const TextStyle(fontSize: 15),
+  //           decoration: const InputDecoration(
+  //               border: OutlineInputBorder(), labelText: "Copies in deck"),
+  //         ),
+  //       ),
+  //       Expanded(
+  //         child: TextFormField(
+  //           keyboardType: TextInputType.number,
+  //           style: const TextStyle(fontSize: 15),
+  //           decoration: const InputDecoration(
+  //               border: OutlineInputBorder(), labelText: "Minimum wanted"),
+  //         ),
+  //       ),
+  //       Expanded(
+  //         child: TextFormField(
+  //           keyboardType: TextInputType.number,
+  //           style: const TextStyle(fontSize: 15),
+  //           decoration: const InputDecoration(
+  //               border: OutlineInputBorder(), labelText: "Maximum wanted"),
+  //         ),
+  //       )
+  //     ],
+  //   );
+  // }
 
   Widget cardEntry2() {
     return ConstrainedBox(
@@ -369,6 +399,7 @@ class _CalcPageState extends State<CalcPage> {
             child: Padding(
               padding: const EdgeInsets.all(5),
               child: TextFormField(
+                textCapitalization: TextCapitalization.sentences,
                 style: const TextStyle(fontSize: 15),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),

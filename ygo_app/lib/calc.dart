@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // import 'entry_adding_page.dart';
-import 'package:uuid/uuid.dart';
+// import 'package:uuid/uuid.dart';
 
 class CalcPage extends StatefulWidget {
   const CalcPage({Key? key}) : super(key: key);
@@ -10,17 +10,12 @@ class CalcPage extends StatefulWidget {
 }
 
 class _CalcPageState extends State<CalcPage> {
-  int numDeck = 0;
-  int _counter = 0;
+  TextEditingController numDeck = TextEditingController();
+  TextEditingController numHand = TextEditingController();
 
   List<Widget> wantedCards = [];
   List<UniqueKey> keys = [];
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   wantedCards = [cardEntry()];
-  // }
+  List<List<TextEditingController>> ctrls = [];
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +96,7 @@ class _CalcPageState extends State<CalcPage> {
                   )),
                   Expanded(
                       child: TextFormField(
+                    controller: numDeck,
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
@@ -123,6 +119,7 @@ class _CalcPageState extends State<CalcPage> {
                   )),
                   Expanded(
                       child: TextFormField(
+                    controller: numHand,
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
@@ -136,19 +133,10 @@ class _CalcPageState extends State<CalcPage> {
             Divider(
               color: Theme.of(context).accentColor,
             ),
-            // Expanded(
-            //   child: StatefulBuilder(
-            //     builder: (BuildContext context, StateSetter setState) =>
-            //         ListView(
-            //       children: [...wantedCards],
-            //     ),
-            //   ),
-            // ),
             Expanded(
               child: ListView.builder(
                 itemCount: wantedCards.length,
                 itemBuilder: (context, index) {
-                  final item = wantedCards[index];
                   return Dismissible(
                     background: Container(
                       decoration: BoxDecoration(
@@ -172,6 +160,7 @@ class _CalcPageState extends State<CalcPage> {
                       setState(() {
                         wantedCards.removeAt(index);
                         keys.removeAt(index);
+                        ctrls.removeAt(index);
                       });
                       // ScaffoldMessenger.of(context).showSnackBar(
                       //   SnackBar(
@@ -181,7 +170,7 @@ class _CalcPageState extends State<CalcPage> {
                       //       content: Text('$item dismissed')),
                       // );
                     },
-                    child: cardEntry2(),
+                    child: wantedCards[index],
                   );
                 },
               ),
@@ -189,21 +178,6 @@ class _CalcPageState extends State<CalcPage> {
             Divider(
               color: Theme.of(context).accentColor,
             ),
-            // Align(
-            //   alignment: Alignment.bottomRight,
-            //   child: FloatingActionButton(
-            //     heroTag: null,
-            //     onPressed: () {
-            //       setState(() {
-            //         wantedCards?.add(cardEntry());
-            //       });
-            //     },
-            //     child: Icon(
-            //       Icons.add,
-            //       color: Colors.black,
-            //     ),
-            //   ),
-            // )
             Visibility(
               visible: MediaQuery.of(context).viewInsets.bottom == 0.0,
               child: Row(
@@ -224,6 +198,7 @@ class _CalcPageState extends State<CalcPage> {
                         setState(() {
                           wantedCards.removeLast();
                           keys.removeLast();
+                          ctrls.removeLast();
                         });
                       },
                       child: const Padding(
@@ -250,7 +225,7 @@ class _CalcPageState extends State<CalcPage> {
                           context: context,
                           builder: (_) => AlertDialog(
                                 title: const Text('Results'),
-                                content: const Placeholder(),
+                                content: getResults(),
                                 actions: [
                                   TextButton(
                                       onPressed: () =>
@@ -279,8 +254,18 @@ class _CalcPageState extends State<CalcPage> {
                       borderRadius: BorderRadius.circular(1000.0),
                       onTap: () {
                         setState(() {
-                          wantedCards.add(cardEntry2());
+                          final TextEditingController name =
+                              TextEditingController();
+                          final TextEditingController inDeck =
+                              TextEditingController();
+                          final TextEditingController minWant =
+                              TextEditingController();
+                          final TextEditingController maxWant =
+                              TextEditingController();
+                          wantedCards
+                              .add(cardEntry(name, inDeck, minWant, maxWant));
                           keys.add(UniqueKey());
+                          ctrls.add([name, inDeck, minWant, maxWant]);
                         });
                       },
                       // () async {
@@ -319,78 +304,75 @@ class _CalcPageState extends State<CalcPage> {
     );
   }
 
-  // void _onItemTapped(int index) {
-  //   setState(() {
-  //     switch (index) {
-  //       case 0:
-  //         wantedCards?.removeLast();
-  //         break;
-  //       case 1:
-  //         break;
-  //       case 2:
-  //         wantedCards?.add(cardEntry());
-  //     }
-  //   });
-  // }
+  Widget getResults() {
+    if (wantedCards.length > int.parse(numHand.text)) {
+      return const Text('Too many wanted cards');
+    }
+    int counter = 0;
+    for (int i = 0; i < wantedCards.length; i++) {
+      counter += int.parse(ctrls[i][2].text);
+    }
+    if (counter > int.parse(numHand.text)) {
+      return const Text('Too many wanted cards');
+    }
 
-  // void enterQueue() {
-  //   showDialog(
-  //       context: context,
-  //       builder: (context) => AlertDialog(
-  //             // scrollable: true,
-  //             title: const Text('Enter card details'),
-  //             content: TextFormField(
-  //               style: const TextStyle(fontSize: 15),
-  //               decoration: const InputDecoration(
-  //                   border: OutlineInputBorder(), labelText: "Card name"),
-  //             ),
-  //             actions: [
-  //               TextButton(
-  //                   onPressed: () => Navigator.of(context).pop(),
-  //                   child: const Text('Confirm'))
-  //             ],
-  //           ));
-  // }
+    counter = 0;
+    int loops = 1;
+    final List<int> counters = [];
+    final List<int> inDecks = [];
+    for (int i = 0; i < wantedCards.length; i++) {
+      counter = int.parse(ctrls[i][3].text) - int.parse(ctrls[i][2].text) + 1;
+      loops *= counter;
+      counters.add(counter);
+      inDecks.add(int.parse(ctrls[i][1].text));
+      print('counter = $counter');
+      print('counters = $counters');
+      print('counter[0] = ${counters[0]}');
 
-  // Widget cardEntry() {
-  //   return Column(
-  //     children: [
-  //       Expanded(
-  //         child: TextFormField(
-  //           style: const TextStyle(fontSize: 15),
-  //           decoration: const InputDecoration(
-  //               border: OutlineInputBorder(), labelText: "Card name"),
-  //         ),
-  //       ),
-  //       Expanded(
-  //         child: TextFormField(
-  //           keyboardType: TextInputType.number,
-  //           style: const TextStyle(fontSize: 15),
-  //           decoration: const InputDecoration(
-  //               border: OutlineInputBorder(), labelText: "Copies in deck"),
-  //         ),
-  //       ),
-  //       Expanded(
-  //         child: TextFormField(
-  //           keyboardType: TextInputType.number,
-  //           style: const TextStyle(fontSize: 15),
-  //           decoration: const InputDecoration(
-  //               border: OutlineInputBorder(), labelText: "Minimum wanted"),
-  //         ),
-  //       ),
-  //       Expanded(
-  //         child: TextFormField(
-  //           keyboardType: TextInputType.number,
-  //           style: const TextStyle(fontSize: 15),
-  //           decoration: const InputDecoration(
-  //               border: OutlineInputBorder(), labelText: "Maximum wanted"),
-  //         ),
-  //       )
-  //     ],
-  //   );
-  // }
+      counter = 0;
+    }
 
-  Widget cardEntry2() {
+    double result = 0;
+    double result2 = 0;
+    for (int i = 0; i < wantedCards.length; i++) {
+      print('bbbbbbbb');
+      if (i > 0) {
+        result2 = 0;
+        for (int j = 0; j < counters[i]; j++) {
+          print('cccccccccc');
+          result2 += choose(inDecks[i], int.parse(ctrls[i][2].text) + j) *
+              choose(int.parse(numDeck.text) - inDecks[i],
+                  int.parse(numHand.text) - int.parse(ctrls[i][2].text) - j);
+        }
+        result *= result2;
+      } else {
+        for (int j = 0; j < counters[i]; j++) {
+          result += choose(inDecks[i], int.parse(ctrls[i][2].text) + j) *
+              choose(int.parse(numDeck.text) - inDecks[i],
+                  int.parse(numHand.text) - int.parse(ctrls[i][2].text) - j);
+        }
+      }
+    }
+    print('result=$result');
+
+    result /= choose(int.parse(numDeck.text), int.parse(numHand.text));
+    return Text(result.toString());
+  }
+
+  double choose(int n, int k) {
+    return fac(n) / (fac(k) * fac(n - k));
+  }
+
+  BigInt fac(int n) {
+    BigInt temp = BigInt.one;
+    for (BigInt i = BigInt.one; i <= BigInt.from(n); i += BigInt.one) {
+      temp *= i;
+    }
+    return temp;
+  }
+
+  Widget cardEntry(TextEditingController name, TextEditingController inDeck,
+      TextEditingController minWant, TextEditingController maxWant) {
     return ConstrainedBox(
       constraints: const BoxConstraints(maxHeight: 54),
       child: Row(
@@ -399,6 +381,7 @@ class _CalcPageState extends State<CalcPage> {
             child: Padding(
               padding: const EdgeInsets.all(5),
               child: TextFormField(
+                controller: name,
                 textCapitalization: TextCapitalization.sentences,
                 style: const TextStyle(fontSize: 15),
                 decoration: const InputDecoration(
@@ -412,6 +395,7 @@ class _CalcPageState extends State<CalcPage> {
             child: Padding(
               padding: const EdgeInsets.all(5),
               child: TextFormField(
+                controller: inDeck,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 15),
                 decoration: const InputDecoration(
@@ -425,6 +409,7 @@ class _CalcPageState extends State<CalcPage> {
             child: Padding(
               padding: const EdgeInsets.all(5),
               child: TextFormField(
+                controller: minWant,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 15),
                 decoration: const InputDecoration(
@@ -438,26 +423,16 @@ class _CalcPageState extends State<CalcPage> {
             child: Padding(
               padding: const EdgeInsets.all(5),
               child: TextFormField(
+                controller: maxWant,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 15),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Max",
-                  // helperText: 'Max wanted',
                 ),
               ),
             ),
           ),
-          // ConstrainedBox(
-          //   constraints: const BoxConstraints(maxHeight: 50, maxWidth: 50),
-          //   child: Padding(
-          //     padding: const EdgeInsets.only(top: 5, bottom: 5),
-          //     child: IconButton(
-          //       onPressed: () {},
-          //       icon: const Icon(Icons.close),
-          //     ),
-          //   ),
-          // )
         ],
       ),
     );

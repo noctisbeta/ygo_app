@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ygo_app/calc.dart';
 
 class SmallWorldPage extends StatefulWidget {
   const SmallWorldPage({Key? key}) : super(key: key);
@@ -29,7 +30,7 @@ class _SmallWorldPageState extends State<SmallWorldPage> {
                   highlightColor: Theme.of(context).backgroundColor,
                   borderRadius: BorderRadius.circular(10.0),
                   onTap: () => Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (_) => SmallWorldPage())),
+                      MaterialPageRoute(builder: (_) => const CalcPage())),
                   child: const Padding(
                     padding: EdgeInsets.all(10),
                     child: Icon(

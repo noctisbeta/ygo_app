@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'entry_adding_page.dart';
 // import 'package:uuid/uuid.dart';
 import 'small_world.dart';
+import 'tree.dart';
 
 class CalcPage extends StatefulWidget {
   const CalcPage({Key? key}) : super(key: key);
@@ -39,8 +40,10 @@ class _CalcPageState extends State<CalcPage> {
                   splashColor: Theme.of(context).accentColor,
                   highlightColor: Theme.of(context).backgroundColor,
                   borderRadius: BorderRadius.circular(10.0),
-                  onTap: () => Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (_) => SmallWorldPage())),
+                  onTap: () => Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const SmallWorldPage())),
                   child: const Padding(
                     padding: EdgeInsets.all(10),
                     child: Icon(
@@ -343,50 +346,89 @@ class _CalcPageState extends State<CalcPage> {
     }
 
     counter = 0;
-    int loops = 1;
+    // int loops = 1;
     final List<int> counters = [];
     final List<int> inDecks = [];
+    final List<int> inHands = [];
     for (int i = 0; i < wantedCards.length; i++) {
       counter = int.parse(ctrls[i][3].text) - int.parse(ctrls[i][2].text) + 1;
-      loops *= counter;
+      // loops *= counter;
       counters.add(counter);
       inDecks.add(int.parse(ctrls[i][1].text));
-      print('counter = $counter');
-      print('counters = $counters');
-      print('counter[0] = ${counters[0]}');
+      inHands.add(int.parse(ctrls[i][1].text));
 
       counter = 0;
     }
 
-    double result = 0;
-    double result2 = 0;
-    for (int i = 0; i < wantedCards.length; i++) {
-      print('bbbbbbbb');
-      if (i > 0) {
-        result2 = 0;
-        for (int j = 0; j < counters[i]; j++) {
-          print('cccccccccc');
-          result2 += choose(inDecks[i], int.parse(ctrls[i][2].text) + j) *
-              choose(int.parse(numDeck.text) - inDecks[i],
-                  int.parse(numHand.text) - int.parse(ctrls[i][2].text) - j);
-        }
-        result *= result2;
-      } else {
-        for (int j = 0; j < counters[i]; j++) {
-          result += choose(inDecks[i], int.parse(ctrls[i][2].text) + j) *
-              choose(int.parse(numDeck.text) - inDecks[i],
-                  int.parse(numHand.text) - int.parse(ctrls[i][2].text) - j);
-        }
-      }
-    }
-    print('result=$result');
+    final Tree resultTree = Tree(
+      inDecks: inDecks,
+      numDeck: int.parse(numDeck.text),
+      numHand: int.parse(numHand.text),
+    );
 
-    result /= choose(int.parse(numDeck.text), int.parse(numHand.text));
-    return Text(result.toString());
+    resultTree.makeTree(wantedCards: wantedCards, ctrls: ctrls);
+    final double result = resultTree.calculate() /
+        choose(int.parse(numDeck.text), int.parse(numHand.text));
+    return Text('${(result * 100).toString().substring(0, 4)}%');
+    // return const Text('1');
+
+    // double result = 0;
+    // double result2 = 0;
+    // for (int i = 0; i < wantedCards.length; i++) {
+    //   if (i > 0) {
+    //     result2 = 0;
+    //     for (int j = 0; j < counters[i]; j++) {
+    //       result2 += choose(inDecks[i], int.parse(ctrls[i][2].text) + j) *
+    //           choose(int.parse(numDeck.text) - inDecks[i],
+    //               int.parse(numHand.text) - int.parse(ctrls[i][2].text) - j);
+    //     }
+    //     result *= result2;
+    //   } else {
+    //     for (int j = 0; j < counters[i]; j++) {
+    //       result += choose(inDecks[i], int.parse(ctrls[i][2].text) + j) *
+    //           choose(int.parse(numDeck.text) - inDecks[i],
+    //               int.parse(numHand.text) - int.parse(ctrls[i][2].text) - j);
+    //     }
+    //   }
+    // }
+
+    // int temp = 1;
+    // for (int i = 0; i < wantedCards.length; i++) {
+    //   for (int j = 0; j < counters[i]; j++) {
+    //     // temp *= int.parse(ctrls[i][2].text) * rec(counters, temp);
+    //   }
+    // }
+
+    // result /= choose(int.parse(numDeck.text), int.parse(numHand.text));
+    // return Text(result.toString());
   }
 
-  double choose(int n, int k) {
-    return fac(n) / (fac(k) * fac(n - k));
+  // int rec(List<int> counters, int result, int i) {
+  //   if (i < wantedCards.length - 1) {
+  //     rec(i + 1);
+  //   } else if (i == wantedCards.length - 1) {
+  //     for (int j = int.parse(ctrls[i][2].text);
+  //         j <= int.parse(ctrls[i][3].text);
+  //         j++) {}
+  //   }
+  //   int temp = 1;
+  //   for (int i = 0; i < counters.length; i++) {
+  //     temp *= choose().toInt();
+  //   }
+  //   result += temp;
+  //   return 1;
+  // }
+
+  int pmf(List<int> K, List<int> k) {
+    int temp = 1;
+    for (int i = 0; i < K.length; i++) {
+      temp *= choose(K[i], k[i]).toInt();
+    }
+    return temp;
+  }
+
+  BigInt choose(int n, int k) {
+    return fac(n) ~/ (fac(k) * fac(n - k));
   }
 
   BigInt fac(int n) {

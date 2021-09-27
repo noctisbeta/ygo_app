@@ -58,8 +58,9 @@ class Tree {
   void makeTree(
       {required List wantedCards,
       required List<List<TextEditingController>> ctrls}) {
+    final List<int> values = [];
     for (int i = 0; i < wantedCards.length; i++) {
-      final List<int> values = [];
+      values.clear();
       for (int j = int.parse(ctrls[i][2].text);
           j <= int.parse(ctrls[i][3].text);
           j++) {
@@ -68,6 +69,7 @@ class Tree {
       // print('values=$values');
       insertLevel(values: values, level: i + 1);
     }
+    print('tree made');
   }
 
   void insertLevel({required List<int> values, required int level}) {
@@ -76,7 +78,7 @@ class Tree {
     int currentLevel = 0;
     bool dontSet = false;
 
-    if (current == root && level == 1) {
+    if (level == 1) {
       current.setChildren(values, current);
       return;
     }
@@ -89,9 +91,10 @@ class Tree {
         } else if (currentLevel >= 1) {
           current.reset();
           currentLevel--;
+          current = current.parent!;
           dontSet = true;
-        } else {
-          condition = false;
+        } else if (current == root) {
+          // condition = false;
           current.reset();
           return;
         }
@@ -116,7 +119,6 @@ class Tree {
     final List<int> values = [];
 
     while (true) {
-      print(current.value);
       if (current.hasChildren()) {
         if (current.hasLeft()) {
           if (current.value != 0 && current.visit == 0) {

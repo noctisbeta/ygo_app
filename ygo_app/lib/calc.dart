@@ -369,7 +369,9 @@ class _CalcPageState extends State<CalcPage> {
     resultTree.makeTree(wantedCards: wantedCards, ctrls: ctrls);
     final double result = resultTree.calculate() /
         choose(int.parse(numDeck.text), int.parse(numHand.text));
-    return Text('${(result * 100).toString().substring(0, 4)}%');
+    return Text(
+      'The probability is ${(result * 100).toStringAsFixed(2)}%.',
+    );
     // return const Text('1');
 
     // double result = 0;

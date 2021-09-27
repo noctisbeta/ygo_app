@@ -69,7 +69,6 @@ class Tree {
       // print('values=$values');
       insertLevel(values: values, level: i + 1);
     }
-    print('tree made');
   }
 
   void insertLevel({required List<int> values, required int level}) {

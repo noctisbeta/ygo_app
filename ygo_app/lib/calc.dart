@@ -19,6 +19,8 @@ class _CalcPageState extends State<CalcPage> {
   List<UniqueKey> keys = [];
   List<List<TextEditingController>> ctrls = [];
 
+  // final numDeckKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +38,6 @@ class _CalcPageState extends State<CalcPage> {
                   shape: BoxShape.circle,
                 ),
                 child: InkWell(
-                  focusColor: Colors.red,
                   splashColor: Theme.of(context).accentColor,
                   highlightColor: Theme.of(context).backgroundColor,
                   borderRadius: BorderRadius.circular(10.0),
@@ -63,7 +64,6 @@ class _CalcPageState extends State<CalcPage> {
                   shape: BoxShape.circle,
                 ),
                 child: InkWell(
-                  focusColor: Colors.red,
                   splashColor: Theme.of(context).accentColor,
                   highlightColor: Theme.of(context).backgroundColor,
                   borderRadius: BorderRadius.circular(10.0),
@@ -125,6 +125,17 @@ class _CalcPageState extends State<CalcPage> {
                   )),
                   Expanded(
                       child: TextFormField(
+                    // key: numDeckKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          int.parse(value) < 40 ||
+                          int.parse(value) > 60) {
+                        return 'Invalid value';
+                      }
+                      return null;
+                    },
                     controller: numDeck,
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.number,
@@ -148,6 +159,16 @@ class _CalcPageState extends State<CalcPage> {
                   )),
                   Expanded(
                       child: TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          int.parse(value) < 0 ||
+                          int.parse(value) > int.parse(numDeck.text)) {
+                        return 'Invalid value';
+                      }
+                      return null;
+                    },
                     controller: numHand,
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.number,
@@ -339,7 +360,7 @@ class _CalcPageState extends State<CalcPage> {
     }
     int counter = 0;
     for (int i = 0; i < wantedCards.length; i++) {
-      counter += int.parse(ctrls[i][2].text);
+      counter += int.parse(ctrls[i][3].text);
     }
     if (counter > int.parse(numHand.text)) {
       return const Text('Too many wanted cards');

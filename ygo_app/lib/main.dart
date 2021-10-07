@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'calc.dart';
+import 'package:ygo_app/lp_page.dart';
+import 'home.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -10,5 +11,5 @@ void main() {
       darkTheme: ThemeData().copyWith(
         backgroundColor: Colors.black,
       ),
-      home: const CalcPage()));
+      home: const LifePage()));
 }

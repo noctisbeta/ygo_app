@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ygo_app/calc.dart';
+import 'home.dart';
 import 'lp_page.dart';
 import 'small_world.dart';
 
@@ -96,7 +97,8 @@ class MyDrawer extends StatelessWidget {
                 splashColor: Theme.of(context).accentColor,
                 highlightColor: Theme.of(context).backgroundColor,
                 borderRadius: BorderRadius.circular(10.0),
-                onTap: () {},
+                onTap: () => Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (_) => const HomePage())),
                 child: const Padding(
                   padding: EdgeInsets.all(10),
                   child: Icon(

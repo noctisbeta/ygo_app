@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ygo_app/my_drawer.dart';
@@ -13,10 +14,14 @@ class _LifePageState extends State<LifePage> {
   TextEditingController leftCtl = TextEditingController();
   TextEditingController rightCtl = TextEditingController();
   TextEditingController lpCtl = TextEditingController();
+  TextEditingController diceCtl = TextEditingController();
+  TextEditingController coinCtl = TextEditingController();
 
   bool add = false;
   bool? selected;
   bool lpDisabled = true;
+  bool showDice = false;
+  bool showCoin = false;
 
   Color lpColor = Colors.red[200]!;
   Color lpColorHigh = Colors.red;
@@ -24,6 +29,8 @@ class _LifePageState extends State<LifePage> {
   Color selectedColorR = Colors.black;
 
   List<Widget> logList = [];
+
+  List eventLog = [];
 
   @override
   void initState() {
@@ -44,6 +51,7 @@ class _LifePageState extends State<LifePage> {
           margin: const EdgeInsets.all(10),
           child: Column(
             children: [
+              const Spacer(),
               Row(
                 children: [
                   const Spacer(),
@@ -78,6 +86,9 @@ class _LifePageState extends State<LifePage> {
                               ),
                             ),
                           ));
+                          if (temp < 0) {
+                            temp = 0;
+                          }
                           leftCtl.text = temp.toString();
                           lpCtl.text = '';
                           lpDisabled = true;
@@ -91,7 +102,7 @@ class _LifePageState extends State<LifePage> {
                         child: Text(
                           leftCtl.text,
                           style: const TextStyle(
-                            fontSize: 30,
+                            fontSize: 50,
                           ),
                         ),
                       ),
@@ -131,6 +142,9 @@ class _LifePageState extends State<LifePage> {
                               ),
                             ),
                           ));
+                          if (temp < 0) {
+                            temp = 0;
+                          }
                           rightCtl.text = temp.toString();
                           lpCtl.text = '';
                           lpDisabled = true;
@@ -144,9 +158,35 @@ class _LifePageState extends State<LifePage> {
                         child: Text(
                           rightCtl.text,
                           style: const TextStyle(
-                            fontSize: 30,
+                            fontSize: 50,
                           ),
                         ),
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                ],
+              ),
+              const Spacer(),
+              Row(
+                children: [
+                  const Spacer(),
+                  Visibility(
+                    visible: showDice,
+                    child: Text(
+                      diceCtl.text,
+                      style: const TextStyle(
+                        fontSize: 25,
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  Visibility(
+                    visible: showCoin,
+                    child: Text(
+                      coinCtl.text,
+                      style: const TextStyle(
+                        fontSize: 25,
                       ),
                     ),
                   ),
@@ -168,7 +208,25 @@ class _LifePageState extends State<LifePage> {
                       child: InkWell(
                         splashColor: Theme.of(context).accentColor,
                         borderRadius: BorderRadius.circular(500),
-                        onTap: () {},
+                        onTap: () {
+                          showDice = true;
+                          final rng = Random();
+                          final int diceNum = rng.nextInt(6) + 1;
+                          setState(() {
+                            diceCtl.text = diceNum.toString();
+                            logList.add(Center(
+                              child: Text(
+                                'Dice roll: ${diceCtl.text}',
+                              ),
+                            ));
+
+                            Future.delayed(const Duration(seconds: 2), () {
+                              setState(() {
+                                showDice = false;
+                              });
+                            });
+                          });
+                        },
                         child: const Padding(
                           padding: EdgeInsets.all(10),
                           child: Icon(
@@ -179,7 +237,7 @@ class _LifePageState extends State<LifePage> {
                       ),
                     ),
                   ),
-                  const Spacer(),
+                  // const Spacer(),
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: Ink(
@@ -191,7 +249,35 @@ class _LifePageState extends State<LifePage> {
                       child: InkWell(
                         splashColor: Theme.of(context).accentColor,
                         borderRadius: BorderRadius.circular(500),
-                        onTap: () {},
+                        onTap: () {
+                          final rng = Random();
+                          final int coinNum = rng.nextInt(2) + 1;
+                          String result = '';
+                          setState(() {
+                            showCoin = true;
+                            coinCtl.text = coinNum % 2 == 0 ? 'Heads' : 'Tails';
+                            if (coinNum % 2 == 0) {
+                              result = 'Heads';
+                              logList.add(
+                                Center(
+                                  child: Text(result),
+                                ),
+                              );
+                            } else {
+                              result = 'Tails';
+                              logList.add(
+                                Center(
+                                  child: Text(result),
+                                ),
+                              );
+                            }
+                            Future.delayed(const Duration(seconds: 2), () {
+                              setState(() {
+                                showCoin = false;
+                              });
+                            });
+                          });
+                        },
                         child: const Padding(
                           padding: EdgeInsets.all(10),
                           child: Icon(
@@ -205,10 +291,9 @@ class _LifePageState extends State<LifePage> {
                   const Spacer(),
                 ],
               ),
-              const Spacer(),
               Row(
                 children: [
-                  // const Spacer(),
+                  const Spacer(),
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: Ink(
@@ -240,7 +325,8 @@ class _LifePageState extends State<LifePage> {
                       ),
                     ),
                   ),
-                  Expanded(
+                  Flexible(
+                    flex: 3,
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 40),
                       child: TextFormField(
@@ -292,18 +378,24 @@ class _LifePageState extends State<LifePage> {
                       ),
                     ),
                   ),
-                  // const Spacer(),
+                  const Spacer(),
                 ],
               ),
               Divider(
                 color: Theme.of(context).accentColor,
               ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: logList.length,
-                  itemBuilder: (context, index) {
-                    return logList[index];
+              Flexible(
+                flex: 2,
+                child: GestureDetector(
+                  onHorizontalDragEnd: (e) {
+                    print('a');
                   },
+                  child: ListView.builder(
+                    itemCount: logList.length,
+                    itemBuilder: (context, index) {
+                      return logList[index];
+                    },
+                  ),
                 ),
               ),
               Divider(

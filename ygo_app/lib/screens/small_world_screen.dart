@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'my_drawer.dart';
+import '../widgets/my_drawer.dart';
 
-class SmallWorldPage extends StatefulWidget {
-  const SmallWorldPage({Key? key}) : super(key: key);
+class SmallWorldScreen extends StatefulWidget {
+  const SmallWorldScreen({Key? key}) : super(key: key);
 
   @override
-  _SmallWorldPageState createState() => _SmallWorldPageState();
+  _SmallWorldScreenState createState() => _SmallWorldScreenState();
 }
 
-class _SmallWorldPageState extends State<SmallWorldPage> {
+class _SmallWorldScreenState extends State<SmallWorldScreen> {
   List<Widget> wantedCards = [];
   List<UniqueKey> keys = [];
   List<List<TextEditingController>> ctrls = [];

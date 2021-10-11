@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'nav_buttons.dart';
+import '../widgets/nav_buttons.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   List<Widget> get buttons => const [
         HomeButton(),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ygo_app/calc.dart';
-import 'home.dart';
-import 'lp_page.dart';
-import 'small_world.dart';
+import 'package:ygo_app/screens/calc_screen.dart';
+import '../screens/home_screen.dart';
+import '../screens/game_screen.dart';
+import '../screens/small_world_screen.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({Key? key}) : super(key: key);
@@ -26,7 +26,7 @@ class MyDrawer extends StatelessWidget {
                 highlightColor: Theme.of(context).backgroundColor,
                 borderRadius: BorderRadius.circular(10.0),
                 onTap: () => Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (_) => const LifePage())),
+                    MaterialPageRoute(builder: (_) => const GameScreen())),
                 child: const Padding(
                   padding: EdgeInsets.all(10),
                   child: Icon(
@@ -49,8 +49,10 @@ class MyDrawer extends StatelessWidget {
                 splashColor: Theme.of(context).accentColor,
                 highlightColor: Theme.of(context).backgroundColor,
                 borderRadius: BorderRadius.circular(10.0),
-                onTap: () => Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (_) => const SmallWorldPage())),
+                onTap: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const SmallWorldScreen())),
                 child: const Padding(
                   padding: EdgeInsets.all(10),
                   child: Icon(
@@ -74,7 +76,7 @@ class MyDrawer extends StatelessWidget {
                 highlightColor: Theme.of(context).backgroundColor,
                 borderRadius: BorderRadius.circular(10.0),
                 onTap: () => Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (_) => const CalcPage())),
+                    MaterialPageRoute(builder: (_) => const CalcScreen())),
                 child: const Padding(
                   padding: EdgeInsets.all(10),
                   child: Icon(
@@ -98,7 +100,7 @@ class MyDrawer extends StatelessWidget {
                 highlightColor: Theme.of(context).backgroundColor,
                 borderRadius: BorderRadius.circular(10.0),
                 onTap: () => Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (_) => const HomePage())),
+                    MaterialPageRoute(builder: (_) => const HomeScreen())),
                 child: const Padding(
                   padding: EdgeInsets.all(10),
                   child: Icon(

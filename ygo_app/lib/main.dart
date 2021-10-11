@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ygo_app/lp_page.dart';
-import 'home.dart';
+import 'package:ygo_app/screens/game_screen.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -11,5 +10,5 @@ void main() {
       darkTheme: ThemeData().copyWith(
         backgroundColor: Colors.black,
       ),
-      home: const LifePage()));
+      home: const GameScreen()));
 }

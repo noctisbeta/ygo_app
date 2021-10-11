@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 // import 'entry_adding_page.dart';
 // import 'package:uuid/uuid.dart';
 // import 'lp_page.dart';
-import 'my_drawer.dart';
+import '../widgets/my_drawer.dart';
 // import 'small_world.dart';
-import 'tree.dart';
+import '../utility/tree.dart';
 
-class CalcPage extends StatefulWidget {
-  const CalcPage({Key? key}) : super(key: key);
+class CalcScreen extends StatefulWidget {
+  const CalcScreen({Key? key}) : super(key: key);
 
   @override
-  _CalcPageState createState() => _CalcPageState();
+  _CalcScreenState createState() => _CalcScreenState();
 }
 
-class _CalcPageState extends State<CalcPage> {
+class _CalcScreenState extends State<CalcScreen> {
   TextEditingController numDeck = TextEditingController();
   TextEditingController numHand = TextEditingController();
 

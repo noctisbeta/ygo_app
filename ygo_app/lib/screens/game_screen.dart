@@ -1,16 +1,17 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ygo_app/my_drawer.dart';
+import 'package:ygo_app/widgets/my_drawer.dart';
+import '../utility/undo.dart';
 
-class LifePage extends StatefulWidget {
-  const LifePage({Key? key}) : super(key: key);
+class GameScreen extends StatefulWidget {
+  const GameScreen({Key? key}) : super(key: key);
 
   @override
-  _LifePageState createState() => _LifePageState();
+  _GameScreenState createState() => _GameScreenState();
 }
 
-class _LifePageState extends State<LifePage> {
+class _GameScreenState extends State<GameScreen> {
   TextEditingController leftCtl = TextEditingController();
   TextEditingController rightCtl = TextEditingController();
   TextEditingController lpCtl = TextEditingController();
@@ -30,7 +31,7 @@ class _LifePageState extends State<LifePage> {
 
   List<Widget> logList = [];
 
-  List eventLog = [];
+  List<UndoObject> undoLog = [];
 
   @override
   void initState() {
@@ -77,15 +78,18 @@ class _LifePageState extends State<LifePage> {
                             temp =
                                 int.parse(leftCtl.text) - int.parse(lpCtl.text);
                           }
-                          logList.add(Expanded(
-                            child: Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Text(
-                                sign + lpCtl.text,
-                                style: TextStyle(color: lpColorHigh),
-                              ),
+                          logList.add(Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              sign + lpCtl.text,
+                              style: TextStyle(color: lpColorHigh),
                             ),
                           ));
+                          int value = int.parse(lpCtl.text);
+                          value = sign == '+' ? -value : value;
+                          undoLog
+                              .add(UndoObject(type: 'lp_left', value: value));
+
                           if (temp < 0) {
                             temp = 0;
                           }
@@ -131,17 +135,19 @@ class _LifePageState extends State<LifePage> {
                             temp = int.parse(rightCtl.text) -
                                 int.parse(lpCtl.text);
                           }
-                          logList.add(Expanded(
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: Text(
-                                sign + lpCtl.text,
-                                style: TextStyle(
-                                  color: lpColorHigh,
-                                ),
+                          logList.add(Align(
+                            alignment: Alignment.bottomRight,
+                            child: Text(
+                              sign + lpCtl.text,
+                              style: TextStyle(
+                                color: lpColorHigh,
                               ),
                             ),
                           ));
+                          int value = int.parse(lpCtl.text);
+                          value = sign == '+' ? -value : value;
+                          undoLog
+                              .add(UndoObject(type: 'lp_right', value: value));
                           if (temp < 0) {
                             temp = 0;
                           }
@@ -219,6 +225,8 @@ class _LifePageState extends State<LifePage> {
                                 'Dice roll: ${diceCtl.text}',
                               ),
                             ));
+                            undoLog
+                                .add(UndoObject(type: 'dice', value: diceNum));
 
                             Future.delayed(const Duration(seconds: 2), () {
                               setState(() {
@@ -271,6 +279,8 @@ class _LifePageState extends State<LifePage> {
                                 ),
                               );
                             }
+                            undoLog
+                                .add(UndoObject(type: 'coin', value: coinNum));
                             Future.delayed(const Duration(seconds: 2), () {
                               setState(() {
                                 showCoin = false;
@@ -388,7 +398,34 @@ class _LifePageState extends State<LifePage> {
                 flex: 2,
                 child: GestureDetector(
                   onHorizontalDragEnd: (e) {
-                    print('a');
+                    final UndoObject undo = undoLog.removeLast();
+
+                    switch (undo.type) {
+                      case 'lp_left':
+                        final int value = undo.value;
+                        final String sValue =
+                            (int.parse(leftCtl.text) + value).toString();
+                        setState(() {
+                          leftCtl.text = sValue;
+                          logList.removeLast();
+                        });
+
+                        break;
+                      case 'lp_right':
+                        final int value = undo.value;
+                        final String sValue =
+                            (int.parse(rightCtl.text) + value).toString();
+                        setState(() {
+                          rightCtl.text = sValue;
+                          logList.removeLast();
+                        });
+
+                        break;
+                      case 'dice':
+                        break;
+                      case 'coin':
+                        break;
+                    }
                   },
                   child: ListView.builder(
                     itemCount: logList.length,

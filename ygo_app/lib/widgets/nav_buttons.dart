@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'calc.dart';
-import 'home.dart';
-import 'info_page.dart';
-import 'lp_page.dart';
-import 'small_world.dart';
+import '../screens/calc_screen.dart';
+import '../screens/home_screen.dart';
+import '../screens/info_screen.dart';
+import '../screens/game_screen.dart';
+import '../screens/small_world_screen.dart';
 
 class HomeButton extends StatelessWidget {
   const HomeButton({Key? key}) : super(key: key);
@@ -22,7 +22,7 @@ class HomeButton extends StatelessWidget {
           highlightColor: Theme.of(context).backgroundColor,
           borderRadius: BorderRadius.circular(10.0),
           onTap: () => Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => const HomePage())),
+              context, MaterialPageRoute(builder: (_) => const HomeScreen())),
           child: const Padding(
             padding: EdgeInsets.all(10),
             child: Icon(
@@ -53,7 +53,7 @@ class CalcButton extends StatelessWidget {
           highlightColor: Theme.of(context).backgroundColor,
           borderRadius: BorderRadius.circular(10.0),
           onTap: () => Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => const CalcPage())),
+              context, MaterialPageRoute(builder: (_) => const CalcScreen())),
           child: const Padding(
             padding: EdgeInsets.all(10),
             child: Icon(
@@ -84,7 +84,7 @@ class GameButton extends StatelessWidget {
           highlightColor: Theme.of(context).backgroundColor,
           borderRadius: BorderRadius.circular(10.0),
           onTap: () => Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => const LifePage())),
+              context, MaterialPageRoute(builder: (_) => const GameScreen())),
           child: const Padding(
             padding: EdgeInsets.all(10),
             child: Icon(
@@ -115,7 +115,7 @@ class SmallWorldButton extends StatelessWidget {
           highlightColor: Theme.of(context).backgroundColor,
           borderRadius: BorderRadius.circular(10.0),
           onTap: () => Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (_) => const SmallWorldPage())),
+              MaterialPageRoute(builder: (_) => const SmallWorldScreen())),
           child: const Padding(
             padding: EdgeInsets.all(10),
             child: Icon(
@@ -147,7 +147,7 @@ class InfoButton extends StatelessWidget {
           highlightColor: Theme.of(context).backgroundColor,
           borderRadius: BorderRadius.circular(10.0),
           onTap: () => Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => const InfoPage())),
+              context, MaterialPageRoute(builder: (_) => const InfoScreen())),
           child: const Padding(
             padding: EdgeInsets.all(10),
             child: Icon(
